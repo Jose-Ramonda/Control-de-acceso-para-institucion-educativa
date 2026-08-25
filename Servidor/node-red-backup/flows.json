@@ -1,0 +1,817 @@
+[
+    {
+        "id": "8b51d57d1496e005",
+        "type": "tab",
+        "label": "HTTP Server",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3c1d4f51b7b9fca4",
+        "type": "tab",
+        "label": "Serial tester",
+        "disabled": true,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e7a8b24a3850b3b5",
+        "type": "tab",
+        "label": "History",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7dea6995599e1424",
+        "type": "serial-port",
+        "name": "Receptor",
+        "serialport": "/dev/ttyUSB2",
+        "serialbaud": "9600",
+        "databits": 8,
+        "parity": "none",
+        "stopbits": 1,
+        "waitfor": "",
+        "dtr": "none",
+        "rts": "none",
+        "cts": "none",
+        "dsr": "none",
+        "newline": "20",
+        "bin": "bin",
+        "out": "time",
+        "addchar": "",
+        "responsetimeout": 10000
+    },
+    {
+        "id": "0767f300dc7d9c39",
+        "type": "mqtt-broker",
+        "name": "MQTT sub",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "eb4ab93c87ef87d8",
+        "type": "telegram bot",
+        "botname": "Acceso_Bot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "none",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "e0d98b9a6b2e5812",
+        "type": "http in",
+        "z": "8b51d57d1496e005",
+        "name": "",
+        "url": "/upload",
+        "method": "post",
+        "upload": true,
+        "skipBodyParsing": true,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 80,
+        "wires": [
+            [
+                "4a828ccf823a4efe",
+                "746daf3c49e63af7"
+            ]
+        ]
+    },
+    {
+        "id": "d67a82b8eca3e11f",
+        "type": "http response",
+        "z": "8b51d57d1496e005",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 1030,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "746daf3c49e63af7",
+        "type": "file",
+        "z": "8b51d57d1496e005",
+        "name": "",
+        "filename": "/home/jose/Proyecto/SBC/fotos/captura_actual.jpeg",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "d67a82b8eca3e11f"
+            ]
+        ]
+    },
+    {
+        "id": "7e1c0e9748a85f03",
+        "type": "mqtt in",
+        "z": "8b51d57d1496e005",
+        "name": "",
+        "topic": "sbc/status/+",
+        "qos": "1",
+        "datatype": "utf8",
+        "broker": "0767f300dc7d9c39",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "708d10cde51dfb8f"
+            ]
+        ]
+    },
+    {
+        "id": "708d10cde51dfb8f",
+        "type": "function",
+        "z": "8b51d57d1496e005",
+        "name": "Extract nodo",
+        "func": "// msg.topic es \"sbc/status/0x0A\"\nlet partes = msg.topic.split(\"/\");\nmsg.idNodo = partes[2]; // Extrae \"0x0A\", \"0x14\", etc.\n\n// Dejamos pasar el mensaje al siguiente nodo\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 220,
+        "wires": [
+            [
+                "791c59e0a2c8cdd3"
+            ]
+        ]
+    },
+    {
+        "id": "791c59e0a2c8cdd3",
+        "type": "switch",
+        "z": "8b51d57d1496e005",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "OK_FOTO",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "OK_PUERTA",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": ".",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 450,
+        "y": 220,
+        "wires": [
+            [
+                "b8404560455c064c"
+            ],
+            [
+                "3b96b305b1c25918"
+            ],
+            [
+                "fcf5c0fa6fdf06d2"
+            ]
+        ]
+    },
+    {
+        "id": "208e3b3f266ec101",
+        "type": "mqtt in",
+        "z": "8b51d57d1496e005",
+        "name": "",
+        "topic": "sbc/cmd/+",
+        "qos": "1",
+        "datatype": "utf8",
+        "broker": "0767f300dc7d9c39",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 100,
+        "y": 320,
+        "wires": [
+            [
+                "0eb47a548653b96b"
+            ]
+        ]
+    },
+    {
+        "id": "0eb47a548653b96b",
+        "type": "function",
+        "z": "8b51d57d1496e005",
+        "name": "memset",
+        "func": "let tpc = msg.topic.split(\"/\");\nlet cmd = tpc[2]; // Extrae \"abrir\" o \"foto\"\n\n// msg.payload es \"0x0A,987654321\"\nlet partes = msg.payload.split(\",\");\nlet nodo = partes[0];      // \"0x0A\"\nlet chat_id = partes[1];   // \"987654321\"\n\n// Creamos una clave única combinando el nodo y el comando\n// Ejemplo de clave resultante: \"0x0A_abrir\" o \"0x0A_foto\"\nlet claveMemoria = `${nodo}_${cmd}`;\n\n// Guardamos en la memoria del flujo el chat_id usando esa clave combinada\nflow.set(claveMemoria, chat_id);\n\nnode.log(`[NODE-RED] Registrado tracking: ${claveMemoria} pertenece al chat ${chat_id}`);\n\nreturn null; // Cortamos acá, no mandamos nada a Telegram todavía",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b96b305b1c25918",
+        "type": "function",
+        "z": "8b51d57d1496e005",
+        "name": "armatrama-puerta",
+        "func": "let nodo = msg.idNodo; \nlet claveMemoria = `${nodo}_abrir`;\n\n// Buscamos quién pidió la apertura en la RAM de Node-RED\nlet chat_id = flow.get(claveMemoria);\n\nif (chat_id) {\n    // Armamos la estructura JSON exacta del nuevo protocolo\n    msg.payload = {\n        \"destino\": parseInt(chat_id, 10),\n        \"evento\": \"puerta_ok\",\n        \"nodo\": nodo,\n        \"data\": \"\" // No requiere datos adicionales\n    };\n    \n    msg.topic = \"sbc/bot/notificaciones\";\n    \n    // Limpiamos la RAM de Node-RED\n    flow.set(claveMemoria, null); \n    \n    return msg; // Va al nodo 'mqtt out'\n}\nreturn null;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 220,
+        "wires": [
+            [
+                "c3efbcd0d04b3a4a"
+            ]
+        ]
+    },
+    {
+        "id": "c3efbcd0d04b3a4a",
+        "type": "mqtt out",
+        "z": "8b51d57d1496e005",
+        "name": "Salida ",
+        "topic": "sbc/notify",
+        "qos": "1",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0767f300dc7d9c39",
+        "x": 850,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b8404560455c064c",
+        "type": "function",
+        "z": "8b51d57d1496e005",
+        "name": "armatrama-foto",
+        "func": "let nodo = msg.idNodo; // \"0x14\"\nlet claveMemoria = `${nodo}_foto`;\n\n// Vamos a buscar a la RAM si alguien estaba esperando esta foto\nlet chat_id_solicitante = flow.get(claveMemoria);\n\nif (chat_id_solicitante) {\n    // CASO A: Había una ID esperando. Fue una foto SOLICITADA.\n    msg.payload = {\n        \"destino\": parseInt(chat_id_solicitante, 10),\n        \"evento\": \"foto_solicitada_ok\",\n        \"nodo\": nodo,\n        \"data\": `/home/jose/Proyecto/SBC/fotos/home/jose/Proyecto/SBC/fotos/captura_actual.jpeg`\n    };\n    \n    // Al encontrarlo, limpiamos la RAM para la próxima vuelta\n    flow.set(claveMemoria, null);\n} \nelse {\n    // CASO B: La RAM estaba vacía. Nadie la pidió -> Fue un TIMBRE FÍSICO espontáneo.\n    msg.payload = {\n        \"destino\": \"all\",\n        \"evento\": \"foto_espontanea_ok\",\n        \"nodo\": nodo,\n        \"data\": `/home/jose/Proyecto/SBC/fotos/captura_actual.jpeg` \n        // Nota: La ruta puede ser la misma porque el archivo se pisa con la última captura\n    };\n}\n\nmsg.topic = \"sbc/notify\";\nreturn msg; // Va directo al nodo 'mqtt out'",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 180,
+        "wires": [
+            [
+                "c3efbcd0d04b3a4a"
+            ]
+        ]
+    },
+    {
+        "id": "fcf5c0fa6fdf06d2",
+        "type": "function",
+        "z": "8b51d57d1496e005",
+        "name": "guarda ip",
+        "func": "// 1. Tomamos la IP limpia que pasó el switch\nlet ipNodo = msg.payload.toString().trim();\n\n// 2. Usamos el idNodo que inyectaste en el bloque anterior (ej: \"0x0A\")\nlet nodo = msg.idNodo; \n\n// 3. Guardamos en la RAM del flujo asociándolo al nodo\nlet claveMemoria = `${nodo}_ip`;\nflow.set(claveMemoria, ipNodo);\n\n// Imprimimos en la consola de Node-RED para verificar que se guardó bien\nnode.warn(`💾 IP Registrada en RAM -> Acceso: ${nodo} | IP: ${ipNodo}`);\n\n// Retornamos el mensaje por si querés conectar un nodo de Debug al final\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4a828ccf823a4efe",
+        "type": "function",
+        "z": "8b51d57d1496e005",
+        "d": true,
+        "name": "nombre-dinamico",
+        "func": "// 1. Si no es un mensaje HTTP (ej. es polling serial), lo dejamos pasar sin tocar\nif (!msg.req) {\n    return msg;\n}\n\n// 2. Ruta y nombre de archivo totalmente FIJO\nmsg.filename = \"/home/jose/Proyecto/SBC/fotos/captura_actual.jpeg\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 140,
+        "wires": [
+            [
+                "746daf3c49e63af7"
+            ]
+        ]
+    },
+    {
+        "id": "69da5d23812b2252",
+        "type": "serial in",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "RECEP",
+        "serial": "7dea6995599e1424",
+        "x": 110,
+        "y": 140,
+        "wires": [
+            [
+                "7622fc0613a72010"
+            ]
+        ]
+    },
+    {
+        "id": "7622fc0613a72010",
+        "type": "function",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "function 1",
+        "func": "// Si el mensaje tiene payload, lo formateamos en HEX legible\nif (msg.payload) {\n    let buffer;\n    \n    // Convertir a Buffer si viene como array o string\n    if (Buffer.isBuffer(msg.payload)) {\n        buffer = msg.payload;\n    } else if (Array.isArray(msg.payload)) {\n        buffer = Buffer.from(msg.payload);\n    } else {\n        buffer = Buffer.from(msg.payload.toString());\n    }\n\n    // Convertir cada byte a formato Hex (ej: \"AA AA 00 07 00 F7 B2\")\n    let hexString = buffer.toString('hex').toUpperCase().match(/.{1,2}/g).join(' ');\n\n    // Creamos una propiedad limpia para ver en el panel de Debug\n    msg.payload_hex = hexString;\n    \n    // O si preferís sustituir el payload directo para la consola:\n    msg.payload = hexString;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 140,
+        "wires": [
+            [
+                "4b14529e6666b2c1"
+            ]
+        ]
+    },
+    {
+        "id": "4b14529e6666b2c1",
+        "type": "debug",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 490,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "329af5a71b99b0b4",
+        "type": "inject",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "Puerta",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "2",
+        "topic": "",
+        "payload": "[170,10,3,0]",
+        "payloadType": "json",
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "fca45853596c816d"
+            ]
+        ]
+    },
+    {
+        "id": "fca45853596c816d",
+        "type": "function",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "CRC",
+        "func": "let startByte = msg.payload[0];\nlet data = Buffer.from(msg.payload.slice(1)); \n\n// 1. Inicialización: crc = (~0xFFFF) & 0xFFFF -> que es 0x0000\nlet crc = (~0xFFFF) & 0xFFFF;\n\n// 2. Bucle principal\nfor (let pos = 0; pos < data.length; pos++) {\n    crc ^= data[pos];\n    \n    for (let i = 0; i < 8; i++) {\n        if ((crc & 1) !== 0) {\n            crc = (crc >> 1) ^ 0x8408;\n        } else {\n            crc >>= 1;\n        }\n        crc &= 0xFFFF; // Mantenemos en 16 bits\n    }\n}\n\n// 3. Inversión final: (~crc) & 0xFFFF\ncrc = (~crc) & 0xFFFF;\n\n// 4. Empaquetar todo (Start + Data + CRC_Low + CRC_High)\nlet startBuf = Buffer.from([startByte]);\nlet crcBuf = Buffer.alloc(2);\ncrcBuf.writeUInt16LE(crc, 0); // LE igual que en el ESP32\n\nmsg.payload = Buffer.concat([startBuf, data, crcBuf]);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 260,
+        "wires": [
+            [
+                "293ad010d61e2e72"
+            ]
+        ]
+    },
+    {
+        "id": "293ad010d61e2e72",
+        "type": "serial out",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "Enviador",
+        "serial": "7dea6995599e1424",
+        "x": 480,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "0981c3083b221edf",
+        "type": "inject",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "POLING",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "[170,10,0,0]",
+        "payloadType": "json",
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "fca45853596c816d"
+            ]
+        ]
+    },
+    {
+        "id": "297784abf8a7ca0c",
+        "type": "inject",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "WIFI-CONNECT",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "[170,10,101,4,0,0,0,0]",
+        "payloadType": "json",
+        "x": 120,
+        "y": 400,
+        "wires": [
+            [
+                "fca45853596c816d"
+            ]
+        ]
+    },
+    {
+        "id": "c2e505060fce8b57",
+        "type": "inject",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "FOTO",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "[170,10,7,0]",
+        "payloadType": "json",
+        "x": 130,
+        "y": 460,
+        "wires": [
+            [
+                "fca45853596c816d"
+            ]
+        ]
+    },
+    {
+        "id": "1d6ed2dda2924c93",
+        "type": "inject",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "RESET",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "[170,10,2,0]",
+        "payloadType": "json",
+        "x": 130,
+        "y": 520,
+        "wires": [
+            [
+                "fca45853596c816d"
+            ]
+        ]
+    },
+    {
+        "id": "78116ba3b44f8a52",
+        "type": "inject",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "URL_SERVER",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "[170,10,103,6,192,168,136,91,88,7]",
+        "payloadType": "json",
+        "x": 140,
+        "y": 580,
+        "wires": [
+            [
+                "fca45853596c816d"
+            ]
+        ]
+    },
+    {
+        "id": "72a16d29469b95f5",
+        "type": "inject",
+        "z": "3c1d4f51b7b9fca4",
+        "name": "Bus Recover",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "2",
+        "topic": "",
+        "payload": "[170,10,5,0]",
+        "payloadType": "json",
+        "x": 130,
+        "y": 640,
+        "wires": [
+            [
+                "fca45853596c816d"
+            ]
+        ]
+    },
+    {
+        "id": "08232910eb256748",
+        "type": "inject",
+        "z": "e7a8b24a3850b3b5",
+        "name": "disparar mail",
+        "props": [],
+        "repeat": "",
+        "crontab": "02 19 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 180,
+        "wires": [
+            [
+                "0b9df8746eef684c"
+            ]
+        ]
+    },
+    {
+        "id": "389e8b9d1ca60221",
+        "type": "e-mail",
+        "z": "e7a8b24a3850b3b5",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "josenramonda@gmail.com",
+        "dname": "Enviar mail",
+        "x": 690,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "0b9df8746eef684c",
+        "type": "file in",
+        "z": "e7a8b24a3850b3b5",
+        "name": "Archivo",
+        "filename": "/home/jose/Proyecto/SBC/modulos/log_accesos.csv",
+        "filenameType": "str",
+        "format": "",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 380,
+        "y": 180,
+        "wires": [
+            [
+                "8ec49625b133cf63"
+            ]
+        ]
+    },
+    {
+        "id": "8ec49625b133cf63",
+        "type": "function",
+        "z": "e7a8b24a3850b3b5",
+        "name": "function 2",
+        "func": "let fecha = new Date().toISOString().split('T')[0]; // Genera: YYYY-MM-DD\nmsg.filename = \"backup_accesos_\" + fecha + \".csv\";\n\n// El asunto del correo\nmsg.topic = \"Backup Diario de Accesos\"; \n\n// El cuerpo del correo (opcional)\nmsg.description = \"Se adjunta el CSV con los accesos registrados.\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 180,
+        "wires": [
+            [
+                "389e8b9d1ca60221"
+            ]
+        ]
+    },
+    {
+        "id": "7fdb9c8216c910df",
+        "type": "debug",
+        "z": "e7a8b24a3850b3b5",
+        "name": "debbie",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "8002c22598f2934a",
+        "type": "complete",
+        "z": "e7a8b24a3850b3b5",
+        "name": "",
+        "scope": [
+            "389e8b9d1ca60221"
+        ],
+        "uncaught": false,
+        "x": 250,
+        "y": 300,
+        "wires": [
+            [
+                "797f8c8967d28661",
+                "7fdb9c8216c910df"
+            ]
+        ]
+    },
+    {
+        "id": "a5ecd3915fa13bdf",
+        "type": "catch",
+        "z": "e7a8b24a3850b3b5",
+        "name": "",
+        "scope": [
+            "389e8b9d1ca60221"
+        ],
+        "uncaught": false,
+        "x": 290,
+        "y": 420,
+        "wires": [
+            [
+                "03d838426271b03d"
+            ]
+        ]
+    },
+    {
+        "id": "03d838426271b03d",
+        "type": "debug",
+        "z": "e7a8b24a3850b3b5",
+        "name": "mail error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "797f8c8967d28661",
+        "type": "file",
+        "z": "e7a8b24a3850b3b5",
+        "name": "",
+        "filename": "/home/jose/Proyecto/SBC/modulos/log_accesos.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "delete",
+        "encoding": "none",
+        "x": 600,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    }
+]

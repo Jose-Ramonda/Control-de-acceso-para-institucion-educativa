@@ -1,0 +1,30 @@
+{
+  "pass_dev": "root_ramodbus_2026",
+  "usuarios": {
+    "Jose": {
+      "clave_acceso": "1234",
+      "clave_admin": "admin123",
+      "user_id": 8816825051
+    },
+    "Daniel": {
+      "clave_acceso": "dmarquez123",
+      "clave_admin": "",
+      "user_id": ""
+    },
+    "user1": {
+      "clave_acceso": "",
+      "clave_admin": "",
+      "user_id": ""
+    },
+    "user2": {
+      "clave_acceso": "",
+      "clave_admin": "",
+      "user_id": ""
+    },
+    "user3": {
+      "clave_acceso": "",
+      "clave_admin": "",
+      "user_id": ""
+    }
+  }
+}
